@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[88]:
+# In[7]:
 
 
 import numpy as np
@@ -39,7 +39,7 @@ from sklearn.preprocessing import LabelEncoder
 le = LabelEncoder()
 
 
-# In[141]:
+# In[8]:
 
 
 class OrangeTelecome():
@@ -84,7 +84,7 @@ class OrangeTelecome():
         self.preprocess()
         self.x1_train , self.x1_test ,self.y1_train , self.y1_test = train_test_split(self.x1,self.y1,test_size = 0.25 , random_state=42)
         self.model.fit(self.x1_train ,self.y1_train)
-        print("Model Is Trained Successfullt ")
+        print("Model Is Trained Successfull ")
         
         self.is_trained = True 
     
@@ -108,73 +108,72 @@ class OrangeTelecome():
             #print("Confusion Matrix" , confusion_matrix(self.y1_test,y_pred))    
             #print('\n clasification report:\n', classification_report(self.y1_test,y_pred))            
     
-    def predict(self,state, area_code, intl_plan, voice_mail_plan,number_vmail_messages, total_day_minutes, total_day_calls,total_day_charge, total_eve_minutes, total_eve_calls,total_eve_charge, total_night_minutes, total_night_calls,total_night_charge, total_intl_minutes, total_intl_calls,total_intl_charge, number_customer_service_calls):
-        text = self.__clean(self,state, area_code, intl_plan, voice_mail_plan,number_vmail_messages, total_day_minutes, total_day_calls,total_day_charge, total_eve_minutes, total_eve_calls,total_eve_charge, total_night_minutes, total_night_calls,total_night_charge, total_intl_minutes, total_intl_calls,total_intl_charge, number_customer_service_calls)
-        return self.model.predict([text])
+    def predict(self,test):
+        return
     
 
 
-# In[142]:
+# In[9]:
 
 
 Orange = OrangeTelecome()
 
 
-# In[143]:
+# In[10]:
 
 
 Orange.model = RandomForestClassifier()
 
 
-# In[144]:
+# In[11]:
 
 
 Orange.get_data()
 
 
-# In[145]:
+# In[12]:
 
 
 Orange.df.head()
 
 
-# In[146]:
+# In[13]:
 
 
 Orange.clean()
 
 
-# In[147]:
+# In[14]:
 
 
 Orange.df.head()
 
 
-# In[148]:
+# In[15]:
 
 
 Orange.preprocess()
 
 
-# In[149]:
+# In[16]:
 
 
 Orange.df.head()
 
 
-# In[150]:
+# In[17]:
 
 
 Orange.train()
 
 
-# In[151]:
+# In[18]:
 
 
 Orange.evaluate()
 
 
-# In[1]:
+# In[21]:
 
 
 #Orange.predict(0.32,1,0,1,0.480769,0.754196,0.666667,0.754183,0.542755,0.582353,0.542866,0.619494,0.520000,0.619584,0.500,0.15,0.500000,0.111111)
@@ -192,7 +191,7 @@ Orange.evaluate()
 
 
 
-# In[77]:
+# In[ ]:
 
 
 app = Flask(__name__)
@@ -209,19 +208,48 @@ def train():
     data = {"status_code":200 , "message":"Model Train successfully"}
     return jsonify(data)
 
-@app.route('/predict')
-def predict():
-    text = request.args['text']
-    data = {"status_code":200 ,"text": text, "accuracy":Orange.predict(text)}
-    return jsonify(data)
+#@app.route('/predict')
+#def predict():
+#    text = request.args['text']
+#    data = {"status_code":200 ,"text": text, "accuracy":Orange.predict(text)}
+#    return jsonify(data)
 
 @app.route('/evaluate')
 def evaluate():
+    data = {"status_code":200 , "accuracy":Orange.evaluate()}
+    return jsonify(data)
     #res = Orange.evaluate()
     #return ("Model Accuracy Is : ")+str(res)
     
-    data = {"status_code":200 , "accuracy":Orange.evaluate()}
+    
+
+
+
+@app.route('/predict')
+def predict():
+    state                             = request.args['state']
+    area_code                         = request.args['area_code']
+    intl_plan                         = request.args['intl_plan']
+    voice_mail_plan                   = request.args['voice_mail_plan']
+    number_vmail_messages             = request.args['number_vmail_messages']
+    total_day_minutes                 = request.args['total_day_minutes']
+    total_day_calls                   = request.args['total_day_calls']
+    total_day_charge                  = request.args['total_day_charge']
+    total_eve_minutes                 = request.args['total_eve_minutes']
+    total_eve_calls                   = request.args['total_eve_calls']
+    total_eve_charge                  = request.args['total_eve_charge']
+    total_night_minutes               = request.args['total_night_minutes']
+    total_night_calls                 = request.args['total_night_calls']
+    total_night_charge                = request.args['total_night_charge']
+    total_intl_minutes                = request.args['total_intl_minutes']
+    total_intl_calls                  = request.args['total_intl_calls']
+    total_intl_charge                 = request.args['total_intl_charge']
+    number_customer_service_calls     = request.args['number_customer_service_calls']
+    test = [ self,state, area_code, intl_plan, voice_mail_plan,number_vmail_messages,total_day_minutes, total_day_calls,total_day_charge, total_eve_minutes,total_eve_calls,total_eve_charge, total_night_minutes, total_night_calls, total_night_charge, total_intl_minutes, total_intl_calls,total_intl_charge,number_customer_service_calls]
+    data = {"status_code":200 ,"text": text, "accuracy":Orange.predict(test)}
     return jsonify(data)
+
+
 
 app.run()
 
